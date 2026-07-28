@@ -50,5 +50,5 @@ Only one process may drive the motors at a time. Stop `part_1_ik.py` before star
 
 ## TODOs
 
-Part 1 has TODOs 1–6, Part 2 has TODOs 7–11, and the extension has TODOs 12–14. TODOs
+Part 1 has TODOs 1–6, Part 2 has TODOs 7–10, and the extension has TODOs 11–13. TODOs
 marked `[already done in Part 1]` are places to bring forward code you already wrote.

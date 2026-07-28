@@ -57,7 +57,7 @@ def keyframes_for_leg(leg_name, params, n=N_KEYFRAMES):
     offset subtracted back out.
     """
     ################################################################################################
-    # TODO 14: Implement the conversion.
+    # TODO 13: Implement the conversion.
     #   - Look up this leg's phase offset with effective_offsets(params)[leg_name].
     #   - For k in range(n), sample foot_position(k / n + offset, leg_name, params).
     #   - Subtract nominal_offset(leg_name, params) so the result is expressed the same way

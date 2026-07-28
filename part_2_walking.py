@@ -87,32 +87,32 @@ class InverseKinematics(Node):
         mid_swing_position = np.array([0.0, 0.0, -0.05])
 
         ## trotting
-        # TODO 8: Implement each leg's trajectory in the trotting gait.
+        # TODO 9: Implement each leg's trajectory in the trotting gait.
         rf_ee_offset = np.array([0.06, -0.09, 0])
         rf_ee_triangle_positions = np.array([
             ################################################################################################
-            # TODO 8: Implement the trotting gait
+            # TODO 9: Implement the trotting gait
             ################################################################################################
         ]) + rf_ee_offset
 
         lf_ee_offset = np.array([0.06, 0.09, 0])
         lf_ee_triangle_positions = np.array([
             ################################################################################################
-            # TODO 8: Implement the trotting gait
+            # TODO 9: Implement the trotting gait
             ################################################################################################
         ]) + lf_ee_offset
 
         rb_ee_offset = np.array([-0.11, -0.09, 0])
         rb_ee_triangle_positions = np.array([
             ################################################################################################
-            # TODO 8: Implement the trotting gait
+            # TODO 9: Implement the trotting gait
             ################################################################################################
         ]) + rb_ee_offset
 
         lb_ee_offset = np.array([-0.11, 0.09, 0])
         lb_ee_triangle_positions = np.array([
             ################################################################################################
-            # TODO 8: Implement the trotting gait
+            # TODO 9: Implement the trotting gait
             ################################################################################################
         ]) + lb_ee_offset
 
@@ -144,19 +144,19 @@ class InverseKinematics(Node):
 
     def fl_leg_fk(self, theta):
         ################################################################################################
-        # TODO 9: implement forward kinematics here
+        # TODO 8: implement forward kinematics here
         ################################################################################################
         return
 
     def br_leg_fk(self, theta):
         ################################################################################################
-        # TODO 9: implement forward kinematics here
+        # TODO 8: implement forward kinematics here
         ################################################################################################
         return
 
     def bl_leg_fk(self, theta):
         ################################################################################################
-        # TODO 9: implement forward kinematics here
+        # TODO 8: implement forward kinematics here
         ################################################################################################
         return
 
@@ -179,26 +179,26 @@ class InverseKinematics(Node):
         def cost_function(theta):
             current_position = leg_forward_kinematics(theta)
             ################################################################################################
-            # TODO 10: [already done in Part 1] paste your inverse kinematics here
+            # TODO 7: [already done in Part 1] paste your inverse kinematics here
             ################################################################################################
             return None, None
 
         def gradient(theta, epsilon=1e-3):
             grad = np.zeros(3)
             ################################################################################################
-            # TODO 10: [already done in Part 1] paste your inverse kinematics here
+            # TODO 7: [already done in Part 1] paste your inverse kinematics here
             ################################################################################################
             return grad
 
         theta = np.array(initial_guess).astype(np.float64)
-        learning_rate = None # TODO 10: [already done in Part 1] paste your inverse kinematics here
-        max_iterations = None # TODO 10: [already done in Part 1] paste your inverse kinematics here
-        tolerance = None # TODO 10: [already done in Part 1] paste your inverse kinematics here
+        learning_rate = None # TODO 7: [already done in Part 1] paste your inverse kinematics here
+        max_iterations = None # TODO 7: [already done in Part 1] paste your inverse kinematics here
+        tolerance = None # TODO 7: [already done in Part 1] paste your inverse kinematics here
 
         cost_l = []
         for _ in range(max_iterations):
             ################################################################################################
-            # TODO 10: [already done in Part 1] paste your inverse kinematics here
+            # TODO 7: [already done in Part 1] paste your inverse kinematics here
             ################################################################################################
             continue
 
@@ -206,7 +206,7 @@ class InverseKinematics(Node):
 
     def interpolate_triangle(self, t, leg_index):
         ################################################################################################
-        # TODO 11: implement interpolation for all 4 legs here
+        # TODO 10: implement interpolation for all 4 legs here
         # Unlike Part 1, t is a float between 0 and 1 covering one full gait cycle, and each leg has
         # six keyframes instead of three.
         ################################################################################################
