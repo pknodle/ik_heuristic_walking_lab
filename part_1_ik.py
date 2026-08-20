@@ -67,24 +67,221 @@ class InverseKinematics(Node):
         ################################################################################################
         # TODO 1: Compute the forward kinematics for the front right leg (should be easy after lab 2!)
         ################################################################################################
-        return
+
+        
+    def __init__(self):
+        super().__init__("forward_kinematics")
+        self.joint_subscription = self.create_subscription(JointState, "joint_states", self.listener_callback, 10)
+        self.joint_subscription  # prevent unused variable warning
+
+        self.position_publisher = self.create_publisher(Float64MultiArray, "leg_front_l_end_effector_position", 10)
+        self.marker_publisher = self.create_publisher(Marker, "marker", 10)
+
+        self.joint_positions = None
+        timer_period = 0.02  # publish FK information and marker at 50Hz
+        self.timer = self.create_timer(timer_period, self.timer_callback)
+
+        self.kp_publisher = self.create_publisher(Float64MultiArray, "/forward_kp_controller/commands", 10)
+        self.kd_publisher = self.create_publisher(Float64MultiArray, "/forward_kd_controller/commands", 10)
+
+        # Periodically set gains to 0 so legs go limp
+        self.create_timer(0.1, self.publish_zero_gains)
+
+    def publish_zero_gains(self):
+        self.kp_publisher.publish(Float64MultiArray(data=[0.0] * 12))
+        self.kd_publisher.publish(Float64MultiArray(data=[0.0] * 12))
+
+    def listener_callback(self, msg):
+        # Extract the positions of the joints related to leg_front_l
+        joints_of_interest = ["leg_front_r_1", "leg_front_r_2", "leg_front_r_3"]
+        self.joint_positions = [msg.position[msg.name.index(joint)] for joint in joints_of_interest]
+
+    def forward_kinematics(self, theta1, theta2, theta3):
+
+        def rotation_x(angle):
+            # rotation about the x-axis implemented for you
+            return np.array(
+                [
+                    [1, 0, 0, 0],
+                    [0, np.cos(angle), -np.sin(angle), 0],
+                    [0, np.sin(angle), np.cos(angle), 0],
+                    [0, 0, 0, 1],
+                ]
+            )
+
+        def rotation_y(angle):
+            #rotation about y axis
+           return np.array(
+                [
+                    [np.cos(angle),0, np.sin(angle), 0],
+                    [0, 1, 0, 0],
+                    [-np.sin(angle),0, np.cos(angle), 0],
+                    [0, 0, 0, 1],
+                ])
+                
+
+        def rotation_z(angle):
+            ## TODO: Implement the rotation matrix about the z-axis
+             return np.array([     
+                    [np.cos(angle), -np.sin(angle),0, 0],
+                    [np.sin(angle), np.cos(angle),0, 0],
+                    [0, 0, 1, 0],
+                    [0, 0, 0, 1],
+                    ])
+                
+
+
+        def translation(x, y, z):
+            ## TODO: Implement the translation matrix
+            return np.array([
+                    [1,0, 0, x],
+                    [0, 1,0, y],
+                    [0, 0, 1, z],
+                    [0, 0, 0, 1],
+                    ])
+            
+
+        # T_0_1 (base_link to leg_front_l_1)
+        T_0_1 = translation(0.07500, -0.0445, 0) @ rotation_x(-1.57080) @ rotation_z(-theta1)
+
+        # T_1_2 (leg_front_l_1 to leg_front_l_2)
+        ## TODO: Implement the transformation matrix from leg_front_l_1 to leg_front_l_2
+        T_1_2 = translation(0,0,-0.039) @rotation_y(-np.pi/2) @rotation_z(theta2)
+
+        # T_2_3 (leg_front_l_2 to leg_front_l_3)
+        ## TODO: Implement the transformation matrix from leg_front_l_2 to leg_front_l_3
+        T_2_3 = translation(0,0.0494,0.0685) @rotation_y(np.pi/2) @rotation_z(-theta3)
+
+        # T_3_ee (leg_front_l_3 to end-effector)
+        T_3_ee = translation(.06321,0.06216,-0.018)
+        debug = translation(.06321,0.06216,0)
+        # TODO: Compute the final transformation. T_0_ee is the multiplication of the previous transformation matrices
+        T_0_ee = T_0_1 @ T_1_2 @ T_2_3 @ T_3_ee
+
+        # TODO: Extract the end-effector position. The end effector position is a 3x1 vector (not in homogenous coordinates)
+        end_effector_position = T_0_ee @[0,0,0,1]
+
+        return end_effector_position
+    def __init__(self):
+        super().__init__("forward_kinematics")
+        self.joint_subscription = self.create_subscription(JointState, "joint_states", self.listener_callback, 10)
+        self.joint_subscription  # prevent unused variable warning
+
+        self.position_publisher = self.create_publisher(Float64MultiArray, "leg_front_l_end_effector_position", 10)
+        self.marker_publisher = self.create_publisher(Marker, "marker", 10)
+
+        self.joint_positions = None
+        timer_period = 0.02  # publish FK information and marker at 50Hz
+        self.timer = self.create_timer(timer_period, self.timer_callback)
+
+        self.kp_publisher = self.create_publisher(Float64MultiArray, "/forward_kp_controller/commands", 10)
+        self.kd_publisher = self.create_publisher(Float64MultiArray, "/forward_kd_controller/commands", 10)
+
+        # Periodically set gains to 0 so legs go limp
+        self.create_timer(0.1, self.publish_zero_gains)
+
+    def publish_zero_gains(self):
+        self.kp_publisher.publish(Float64MultiArray(data=[0.0] * 12))
+        self.kd_publisher.publish(Float64MultiArray(data=[0.0] * 12))
+
+    def listener_callback(self, msg):
+        # Extract the positions of the joints related to leg_front_l
+        joints_of_interest = ["leg_front_r_1", "leg_front_r_2", "leg_front_r_3"]
+        self.joint_positions = [msg.position[msg.name.index(joint)] for joint in joints_of_interest]
+
+    def forward_kinematics(self, theta1, theta2, theta3):
+
+        def rotation_x(angle):
+            # rotation about the x-axis implemented for you
+            return np.array(
+                [
+                    [1, 0, 0, 0],
+                    [0, np.cos(angle), -np.sin(angle), 0],
+                    [0, np.sin(angle), np.cos(angle), 0],
+                    [0, 0, 0, 1],
+                ]
+            )
+
+        def rotation_y(angle):
+            #rotation about y axis
+           return np.array(
+                [
+                    [np.cos(angle),0, np.sin(angle), 0],
+                    [0, 1, 0, 0],
+                    [-np.sin(angle),0, np.cos(angle), 0],
+                    [0, 0, 0, 1],
+                ])
+                
+
+        def rotation_z(angle):
+            ## TODO: Implement the rotation matrix about the z-axis
+             return np.array([     
+                    [np.cos(angle), -np.sin(angle),0, 0],
+                    [np.sin(angle), np.cos(angle),0, 0],
+                    [0, 0, 1, 0],
+                    [0, 0, 0, 1],
+                    ])
+                
+
+
+        def translation(x, y, z):
+            ## TODO: Implement the translation matrix
+            return np.array([
+                    [1,0, 0, x],
+                    [0, 1,0, y],
+                    [0, 0, 1, z],
+                    [0, 0, 0, 1],
+                    ])
+            
+
+        # T_0_1 (base_link to leg_front_l_1)
+        T_0_1 = translation(0.07500, -0.0445, 0) @ rotation_x(-1.57080) @ rotation_z(-theta1)
+
+        # T_1_2 (leg_front_l_1 to leg_front_l_2)
+        ## TODO: Implement the transformation matrix from leg_front_l_1 to leg_front_l_2
+        T_1_2 = translation(0,0,-0.039) @rotation_y(-np.pi/2) @rotation_z(theta2)
+
+        # T_2_3 (leg_front_l_2 to leg_front_l_3)
+        ## TODO: Implement the transformation matrix from leg_front_l_2 to leg_front_l_3
+        T_2_3 = translation(0,0.0494,0.0685) @rotation_y(np.pi/2) @rotation_z(-theta3)
+
+        # T_3_ee (leg_front_l_3 to end-effector)
+        T_3_ee = translation(.06321,0.06216,-0.018)
+        debug = translation(.06321,0.06216,0)
+        # TODO: Compute the final transformation. T_0_ee is the multiplication of the previous transformation matrices
+        T_0_ee = T_0_1 @ T_1_2 @ T_2_3 @ T_3_ee
+
+        # TODO: Extract the end-effector position. The end effector position is a 3x1 vector (not in homogenous coordinates)
+        end_effector_position = T_0_ee @[0,0,0,1]
+
+        return end_effector_position
 
     def inverse_kinematics(self, target_ee, initial_guess=[0, 0, 0]):
         def cost_function(theta):
             # Compute the cost function and the squared L2 norm of the error
             # return the cost and the squared L2 norm of the error
+            error = np.abs(target_ee - self.forward_kinematics(*theta))
+            L2_norm = np.linalg.norm(error)
+            cost = (L2_norm)**2
             ################################################################################################
             # TODO 2: Implement the cost function
             # HINT: You can use the * notation on a list to "unpack" a list
             ################################################################################################
-            return None, None
+            return cost, L2_norm
 
         def gradient(theta, epsilon=1e-3):
             # Compute the gradient of the cost function using finite differences
             ################################################################################################
             # TODO 3: Implement the gradient computation
             ################################################################################################
-            return
+            grad = np.zeros(len(theta))
+            cost,_ = cost_function(theta)
+            for i in range(len(theta)):
+                nudged_theta = theta.copy()
+                nudged_theta[i]= nudged_theta[i]+epsilon 
+                nudged_cost,_ = cost_function(nudged_theta) 
+                grad[i] = (nudged_cost - cost)/epsilon
+            return grad
 
         theta = np.array(initial_guess)
         learning_rate = None # TODO 4: Set the learning rate
