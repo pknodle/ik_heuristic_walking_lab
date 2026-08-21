@@ -67,7 +67,7 @@ class InverseKinematics(Node):
         ################################################################################################
         # TODO 1: Compute the forward kinematics for the front right leg (should be easy after lab 2!)
         ################################################################################################
-
+        pass
         
     def __init__(self):
         super().__init__("forward_kinematics")
@@ -75,7 +75,7 @@ class InverseKinematics(Node):
         self.joint_subscription  # prevent unused variable warning
 
         self.position_publisher = self.create_publisher(Float64MultiArray, "leg_front_l_end_effector_position", 10)
-        self.marker_publisher = self.create_publisher(Marker, "marker", 10)
+        #self.marker_publisher = self.create_publisher(Marker, "marker", 10)
 
         self.joint_positions = None
         timer_period = 0.02  # publish FK information and marker at 50Hz
@@ -168,11 +168,11 @@ class InverseKinematics(Node):
         self.joint_subscription  # prevent unused variable warning
 
         self.position_publisher = self.create_publisher(Float64MultiArray, "leg_front_l_end_effector_position", 10)
-        self.marker_publisher = self.create_publisher(Marker, "marker", 10)
+        #self.marker_publisher = self.create_publisher(Marker, "marker", 10)
 
         self.joint_positions = None
         timer_period = 0.02  # publish FK information and marker at 50Hz
-        self.timer = self.create_timer(timer_period, self.timer_callback)
+        self.timer = self.create_timer(timer_period, self.ik_timer_callback)
 
         self.kp_publisher = self.create_publisher(Float64MultiArray, "/forward_kp_controller/commands", 10)
         self.kd_publisher = self.create_publisher(Float64MultiArray, "/forward_kd_controller/commands", 10)
