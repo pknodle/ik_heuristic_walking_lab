@@ -27,7 +27,7 @@ class InverseKinematics(Node):
     def __init__(self):
         super().__init__('inverse_kinematics')
         self.t = 0
-        print("hello")
+       # print("hello")
         self.ee_triangle_positions = np.array([
             [0.05, 0.0, -0.12],  # Touchdown
             [-0.05, 0.0, -0.12], # Liftoff
