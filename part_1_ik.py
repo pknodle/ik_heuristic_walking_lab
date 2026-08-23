@@ -7,6 +7,7 @@ Then run this node:
 
 Only the three front-right joints are commanded in Part 1 (see part_1.yaml).
 """
+#shivam chopra test github
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import JointState
